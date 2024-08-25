@@ -12,10 +12,13 @@ export interface ContainerWithDiscrepancy extends Container {
 
 export async function getContainers(): Promise<{ containers: ContainerWithDiscrepancy[], discrepancies: string[] }> {
     try {
+        const images = await docker.listImages()
+        const postgresImages = images.flatMap(i => i.RepoTags).filter(i => i != null && i.includes("postgres")) as string[]
+
         // Fetch containers from Docker
         const dockerContainers = await docker.listContainers({
             all: true,
-            filters: { ancestor: ['postgres'] }
+            filters: { ancestor: postgresImages }
         })
 
         // Fetch containers from Prisma
@@ -82,6 +85,7 @@ export async function getContainers(): Promise<{ containers: ContainerWithDiscre
 
         // Check for containers in DB that don't exist in Docker
         for (const dbContainer of dbContainers) {
+            console.log({ dockerId: dbContainer.dockerId, cIds: formattedDockerContainers.map(c => c.dockerId) })
             if (!formattedDockerContainers.some(c => c.dockerId === dbContainer.dockerId)) {
                 containersWithDiscrepancies.push({
                     ...dbContainer,

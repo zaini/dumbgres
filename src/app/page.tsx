@@ -16,14 +16,14 @@ export default async function DashboardPage() {
         </span>
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow transition-all duration-300">
           <h2 className="text-2xl font-semibold mb-4 flex items-center">
             <Database className="mr-2 h-6 w-6 text-green-500" />
             Create New Container
           </h2>
           <CreateContainerForm versions={versions} />
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow transition-all duration-300">
           <h2 className="text-2xl font-semibold mb-4 flex items-center">
             <List className="mr-2 h-6 w-6 text-blue-500" />
             Running Containers

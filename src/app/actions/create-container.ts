@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/db'
 import Docker from 'dockerode'
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 const createContainerSchema = z.object({
@@ -58,9 +59,11 @@ export async function createContainer(data: z.infer<typeof createContainerSchema
         }
 
         console.log({ success: true, message: 'Container created successfully', container: savedContainer })
+        revalidatePath('/')
         return { success: true, message: 'Container created successfully', container: savedContainer }
     } catch (error) {
         console.error('Error creating container:', error)
+        revalidatePath('/')
         return { success: false, message: (error as Error).message }
     }
 }

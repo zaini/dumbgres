@@ -37,6 +37,7 @@ export default async function ContainerList() {
                         </div>
                         <p className="text-sm text-gray-500 mt-2">Status: {container.status}</p>
                         <p className="text-sm text-gray-500">URL: {container.url}</p>
+                        <p className="text-sm text-gray-500">Docker ID: {container.dockerId}</p>
                         <ContainerDiff container={container} />
                     </li>
                 ))}

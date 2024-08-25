@@ -1,4 +1,4 @@
-Create a web application that allows users to easily spin up and manage PostgreSQL Docker containers on a Virtual Private Server (VPS). The application should be simple to deploy and use, requiring minimal configuration from the user.
+Goal: Create a web application that allows users to easily spin up and manage PostgreSQL Docker containers on a Virtual Private Server (VPS). The application should be simple to deploy and use, requiring minimal configuration from the user.
 
 ### Updated Project Plan: PostgreSQL Database Management Web App
 
