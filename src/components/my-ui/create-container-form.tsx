@@ -8,8 +8,15 @@ import { useToast } from '@/components/ui/use-toast'
 import { Database, Server, User, Key, Loader2, RefreshCw, EyeOff, Eye } from 'lucide-react'
 import { generateSlug } from 'random-word-slugs'
 import { generateStrongPassword } from '@/lib/utils'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { createContainer } from '@/app/actions/create-container'
+import DetailDialog from './container-details-dialog'
 
-export default function CreateContainerForm() {
+interface CreateContainerFormProps {
+    versions: string[]
+}
+
+export default function CreateContainerForm({ versions }: CreateContainerFormProps) {
     const [name, setName] = useState('')
     const [version, setVersion] = useState('latest')
     const [port, setPort] = useState('5432')
@@ -33,21 +40,36 @@ export default function CreateContainerForm() {
         e.preventDefault()
         setIsLoading(true)
         try {
-            const response = await fetch('/api/containers', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, version, port: parseInt(port), username, password }),
+            const result = await createContainer({
+                name,
+                version,
+                port: parseInt(port),
+                username,
+                password
             })
-            if (response.ok) {
-                toast({ title: 'Container created successfully', description: 'Your new PostgreSQL container is now running.' })
+
+            if (result.success) {
+                toast({
+                    title: 'Container created successfully',
+                    description: 'Your new PostgreSQL container is now running.',
+                    action: <DetailDialog containerDetails={result.container!} errorDetails={null} />,
+                    duration: 100000
+                })
                 generateDefaults()
                 setVersion('latest')
                 setPort('5432')
             } else {
-                throw new Error('Failed to create container')
+                throw new Error(result.message)
             }
         } catch (error) {
-            toast({ title: 'Error', description: 'Failed to create container. Please try again.', variant: 'destructive' })
+            const errorMessage = error instanceof Error ? error.message : 'Failed to create container. Please try again.'
+            toast({
+                title: 'Error',
+                description: 'Failed to create container. Click for more details.',
+                variant: 'destructive',
+                action: <DetailDialog containerDetails={null} errorDetails={errorMessage} />,
+                duration: 100000
+            })
         } finally {
             setIsLoading(false)
         }
@@ -83,7 +105,16 @@ export default function CreateContainerForm() {
                     <Server className="mr-2 h-4 w-4" />
                     PostgreSQL Version
                 </Label>
-                <Input id="version" value={version} onChange={(e) => setVersion(e.target.value)} required className="transition-all duration-300 focus:ring-2 focus:ring-blue-500" />
+                <Select value={version} onValueChange={setVersion}>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a version" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {versions.map((v) => (
+                            <SelectItem key={v} value={v}>{v}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
             <div className="space-y-2">
                 <Label htmlFor="port" className="flex items-center">

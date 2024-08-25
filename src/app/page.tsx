@@ -1,9 +1,12 @@
 import ContainerList from '@/components/my-ui/container-list'
-import CreateContainerForm from '@/components/my-ui/create-container-form'
 import { Suspense } from 'react'
 import { Database, List, Loader2 } from 'lucide-react'
+import { getPostgresVersions } from './actions/get-postgres-versions'
+import CreateContainerForm from '@/components/my-ui/create-container-form'
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const versions = await getPostgresVersions()
+
   return (
     <div className="container mx-auto p-4 animate-fadeIn">
       <h1 className="text-3xl font-bold mb-6 flex items-center">
@@ -18,7 +21,7 @@ export default function DashboardPage() {
             <Database className="mr-2 h-6 w-6 text-green-500" />
             Create New Container
           </h2>
-          <CreateContainerForm />
+          <CreateContainerForm versions={versions} />
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 flex items-center">
