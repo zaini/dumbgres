@@ -6,35 +6,36 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Container } from '@prisma/client'
 import { Button } from "../ui/button";
+import { ContainerInspectInfo } from "dockerode";
+import { DatabaseInfo } from "@prisma/client";
 
 interface DetailDialogProps {
-    containerDetails: Container | null;
-    errorDetails: string | null;
+    container?: ContainerInspectInfo;
+    database?: DatabaseInfo;
+    errorDetails?: string;
 }
 
-export default function DetailDialog({ containerDetails, errorDetails }: DetailDialogProps) {
+export default function DetailDialog({ container, database, errorDetails }: DetailDialogProps) {
+    const url = `postgres://${database?.user}:${database?.password}@localhost:${database?.port}/${database?.name}`
+
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <Button variant="secondary">
-                    {containerDetails ? 'View Details' : 'View Error'}
+                    {container ? 'View Details' : 'View Error'}
                 </Button>
             </DialogTrigger>
             <DialogContent className="min-w-[50rem]">
                 <DialogHeader>
-                    <DialogTitle>{containerDetails ? 'Container Details' : 'Error Details'}</DialogTitle>
+                    <DialogTitle>{container ? 'Container Details' : 'Error Details'}</DialogTitle>
                     <DialogDescription>
-                        {containerDetails ? (
+                        {container ? (
                             <div>
-                                <p>Name: {containerDetails.name}</p>
-                                <p>Version: {containerDetails.version}</p>
-                                <p>Port: {containerDetails.port}</p>
-                                <p>Username: {containerDetails.username}</p>
-                                <p>Docker ID: {containerDetails.dockerId}</p>
-                                <p>Status: {containerDetails.status}</p>
-                                <p>URL: {containerDetails.url}</p>
+                                <p>Name: {container.Name}</p>
+                                <p>Image: {container.Config.Image}</p>
+                                <p>Status: {container.State.Status}</p>
+                                <p>URL: <code>{url}</code></p>
                             </div>
                         ) : (
                             <pre className='whitespace-pre-wrap'>{errorDetails}</pre>

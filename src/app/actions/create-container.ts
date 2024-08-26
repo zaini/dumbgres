@@ -13,7 +13,9 @@ const createContainerSchema = z.object({
     password: z.string()
 })
 
-export async function createContainer(data: z.infer<typeof createContainerSchema>) {
+type CreateContainerRequest = z.infer<typeof createContainerSchema>
+
+export async function createContainer(data: CreateContainerRequest) {
     const validatedData = createContainerSchema.parse(data)
 
     const docker = new Docker()
@@ -39,28 +41,19 @@ export async function createContainer(data: z.infer<typeof createContainerSchema
 
         const containerInfo = await container.inspect()
 
-        const url = `postgres://${validatedData.username}:${validatedData.password}@localhost:${validatedData.port}/${validatedData.name}`
-
-        const savedContainer = await prisma.container.create({
+        const databaseInfo = await prisma.databaseInfo.create({
             data: {
-                dockerId: containerInfo.Id,
                 name: validatedData.name,
-                version: validatedData.version,
                 port: validatedData.port,
-                username: validatedData.username,
+                user: validatedData.username,
                 password: validatedData.password,
-                status: containerInfo.State.Status,
-                url: url
+                dockerId: containerInfo.Id
             }
         })
 
-        if (savedContainer == null) {
-            return { success: false, message: 'Error creating container' }
-        }
-
-        console.log({ success: true, message: 'Container created successfully', container: savedContainer })
+        console.log({ success: true, message: 'Container created successfully', container: containerInfo, database: databaseInfo })
         revalidatePath('/')
-        return { success: true, message: 'Container created successfully', container: savedContainer }
+        return { success: true, message: 'Container created successfully', container: containerInfo, database: databaseInfo }
     } catch (error) {
         console.error('Error creating container:', error)
         revalidatePath('/')

@@ -1,5 +1,4 @@
 "use client"
-import { Container } from "@prisma/client"
 import { Button } from "../ui/button"
 import { Trash2 } from "lucide-react"
 import { useState } from "react"
@@ -15,22 +14,23 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { deleteContainer } from "@/app/actions/delete-container"
+import { deleteDockerContainer } from "@/app/actions/delete-container"
+import { ContainerInfo } from "dockerode"
 
-export default function DeleteContainerButton({ container }: { container: Container }) {
+export default function DeleteContainerButton({ container }: { container: ContainerInfo }) {
     const [isDeleting, setIsDeleting] = useState(false)
     const { toast } = useToast()
 
     const handleDelete = async () => {
         setIsDeleting(true)
         try {
-            const res = await deleteContainer(container.dockerId)
+            const res = await deleteDockerContainer(container.Id)
             if (!res.success) {
                 throw new Error(res.message)
             }
             toast({
                 title: "Container deleted",
-                description: `Container ${container.name} has been successfully deleted.`,
+                description: `Container ${container.Names[0]} has been successfully deleted.`,
             })
             // You might want to trigger a refresh of the container list here
         } catch (error) {
@@ -56,7 +56,7 @@ export default function DeleteContainerButton({ container }: { container: Contai
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                     <AlertDialogDescription>
                         This action cannot be undone. This will permanently delete the
-                        container &quot;{container.name}&quot; and remove all associated data.
+                        container &quot;{container.Names[0]}&quot; and remove all associated data.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

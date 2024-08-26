@@ -52,7 +52,7 @@ export default function CreateContainerForm({ versions }: CreateContainerFormPro
                 toast({
                     title: 'Container created successfully',
                     description: 'Your new PostgreSQL container is now running.',
-                    action: <DetailDialog containerDetails={result.container!} errorDetails={null} />,
+                    action: <DetailDialog container={result.container} database={result.database} />,
                     duration: 100000
                 })
                 generateDefaults()
@@ -67,7 +67,7 @@ export default function CreateContainerForm({ versions }: CreateContainerFormPro
                 title: 'Error',
                 description: 'Failed to create container. Click for more details.',
                 variant: 'destructive',
-                action: <DetailDialog containerDetails={null} errorDetails={errorMessage} />,
+                action: <DetailDialog errorDetails={errorMessage} />,
                 duration: 100000
             })
         } finally {

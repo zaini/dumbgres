@@ -1,44 +1,42 @@
 import { Database, AlertTriangle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { getContainers } from '@/app/actions/get-containers'
 import DeleteContainerButton from './delete-container-button'
-import ContainerDiff from './container-diff'
+import { getDockerContainers } from '@/app/actions/get-containers'
+import StopContainerButton from './stop-container-button'
+import StartContainerButton from './start-container-button'
 
 export default async function ContainerList() {
-    const { containers, discrepancies } = await getContainers()
+    const { containersAndDatabaseInfos, success } = await getDockerContainers()
+
+    if (!success) {
+        return (
+            <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Error fetching containers</AlertTitle>
+                <AlertDescription>There was an error fetching the containers. Please try again later.</AlertDescription>
+            </Alert>
+        )
+    }
 
     return (
         <div className="space-y-4">
-            {discrepancies.length > 0 && (
-                <Alert variant="destructive">
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertTitle>Discrepancies Detected</AlertTitle>
-                    <AlertDescription>
-                        <ul className="list-disc pl-5">
-                            {discrepancies.map((discrepancy, index) => (
-                                <li key={index}>{discrepancy}</li>
-                            ))}
-                        </ul>
-                    </AlertDescription>
-                </Alert>
-            )}
             <ul className="space-y-4">
-                {containers.map((container) => (
-                    <li key={container.id} className={`bg-white shadow rounded-lg p-4 transition-all duration-300 hover:shadow-lg ${container.discrepancies ? 'border-2 border-yellow-500' : ''}`}>
+                {containersAndDatabaseInfos!.map(({ containerInfo, databaseInfo }) => (
+                    <li key={containerInfo.Id} className={`bg-white shadow rounded-lg p-4 transition-all duration-300 hover:shadow-lg`}>
                         <div className="flex items-center justify-between">
                             <h3 className="text-lg font-semibold flex items-center">
                                 <Database className="mr-2 h-5 w-5 text-blue-500" />
-                                {container.name}
-                                {container.discrepancies && (
-                                    <span className="ml-2 text-sm text-yellow-600">(Discrepancies found)</span>
-                                )}
+                                {containerInfo.Names[0]}
                             </h3>
-                            <DeleteContainerButton container={container} />
+                            <div className='flex gap-2'>
+                                <StopContainerButton container={containerInfo} />
+                                <StartContainerButton container={containerInfo} />
+                                <DeleteContainerButton container={containerInfo} />
+                            </div>
                         </div>
-                        <p className="text-sm text-gray-500 mt-2">Status: {container.status}</p>
-                        <p className="text-sm text-gray-500">URL: {container.url}</p>
-                        <p className="text-sm text-gray-500">Docker ID: {container.dockerId}</p>
-                        <ContainerDiff container={container} />
+                        <p className="text-sm text-gray-500 mt-2">Status: {containerInfo.Status}</p>
+                        <p className="text-sm text-gray-500">URL: {`postgres://${databaseInfo?.user}:${databaseInfo?.password}@localhost:${databaseInfo?.port}/${databaseInfo?.name}`}</p>
+                        <p className="text-sm text-gray-500">Docker ID: {containerInfo.Id}</p>
                     </li>
                 ))}
             </ul>

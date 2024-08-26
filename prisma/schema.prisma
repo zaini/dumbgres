@@ -7,16 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Container {
-  id        String   @id @default(uuid())
+model DatabaseInfo {
+  id        Int      @id @default(autoincrement())
   dockerId  String   @unique
   name      String
-  version   String
   port      Int
-  username  String
+  user      String
   password  String
-  status    String
-  url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

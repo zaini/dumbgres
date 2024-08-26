@@ -3,14 +3,15 @@ import { Suspense } from 'react'
 import { Database, List, Loader2 } from 'lucide-react'
 import { getPostgresVersions } from './actions/get-postgres-versions'
 import CreateContainerForm from '@/components/my-ui/create-container-form'
+import Image from 'next/image'
 
 export default async function DashboardPage() {
   const versions = await getPostgresVersions()
 
   return (
     <div className="container mx-auto p-4 animate-fadeIn">
-      <h1 className="text-3xl font-bold mb-6 flex items-center">
-        <Database className="mr-2 h-8 w-8 text-blue-500" />
+      <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
+        <Image src="/dumbgres.svg" alt="dumbgres" width={32} height={32} />
         <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
           dumbgres
         </span>
