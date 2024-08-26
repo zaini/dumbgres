@@ -18,6 +18,18 @@ export default async function ContainerList() {
         )
     }
 
+    const noContainers = containersAndDatabaseInfos!.length === 0
+
+    if (noContainers) {
+        return (
+            <Alert>
+                <Database className="h-4 w-4" />
+                <AlertTitle>No containers running</AlertTitle>
+                <AlertDescription>There are no containers running. You should create a new container!</AlertDescription>
+            </Alert>
+        )
+    }
+
     return (
         <div className="space-y-4">
             <ul className="space-y-4">

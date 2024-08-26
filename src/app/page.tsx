@@ -19,14 +19,14 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow transition-all duration-300">
           <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <Database className="mr-2 h-6 w-6 text-green-500" />
+            <Database className="mr-2 h-6 w-6" />
             Create New Container
           </h2>
           <CreateContainerForm versions={versions} />
         </div>
         <div className="bg-white p-6 rounded-lg shadow transition-all duration-300">
           <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <List className="mr-2 h-6 w-6 text-blue-500" />
+            <List className="mr-2 h-6 w-6" />
             Running Containers
           </h2>
           <Suspense fallback={

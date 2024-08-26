@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/use-toast'
-import { Database, Server, User, Key, Loader2, RefreshCw, EyeOff, Eye } from 'lucide-react'
+import { Loader2, RefreshCw, EyeOff, Eye } from 'lucide-react'
 import { generateSlug } from 'random-word-slugs'
 import { generateStrongPassword } from '@/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -76,19 +76,16 @@ export default function CreateContainerForm({ versions }: CreateContainerFormPro
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-                <Label htmlFor="name" className="flex items-center">
-                    <Database className="mr-2 h-4 w-4" />
-                    Container Name
-                </Label>
+                <Label htmlFor="name">Container Name</Label>
                 <div className="flex">
                     <Input
                         id="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
-                        className="flex-grow transition-all duration-300 focus:ring-2 focus:ring-blue-500"
+                        className="flex-grow"
                     />
                     <Button
                         type="button"
@@ -101,10 +98,7 @@ export default function CreateContainerForm({ versions }: CreateContainerFormPro
                 </div>
             </div>
             <div className="space-y-2">
-                <Label htmlFor="version" className="flex items-center">
-                    <Server className="mr-2 h-4 w-4" />
-                    PostgreSQL Version
-                </Label>
+                <Label htmlFor="version">PostgreSQL Version</Label>
                 <Select value={version} onValueChange={setVersion}>
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a version" />
@@ -117,24 +111,15 @@ export default function CreateContainerForm({ versions }: CreateContainerFormPro
                 </Select>
             </div>
             <div className="space-y-2">
-                <Label htmlFor="port" className="flex items-center">
-                    <Server className="mr-2 h-4 w-4" />
-                    Port
-                </Label>
-                <Input id="port" type="number" value={port} onChange={(e) => setPort(e.target.value)} required className="transition-all duration-300 focus:ring-2 focus:ring-blue-500" />
+                <Label htmlFor="port">Port</Label>
+                <Input id="port" type="number" value={port} onChange={(e) => setPort(e.target.value)} required />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="username" className="flex items-center">
-                    <User className="mr-2 h-4 w-4" />
-                    Username
-                </Label>
-                <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required className="transition-all duration-300 focus:ring-2 focus:ring-blue-500" />
+                <Label htmlFor="username">Username</Label>
+                <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="password" className="flex items-center">
-                    <Key className="mr-2 h-4 w-4" />
-                    Password
-                </Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="flex">
                     <div className="relative flex-grow">
                         <Input
@@ -143,7 +128,7 @@ export default function CreateContainerForm({ versions }: CreateContainerFormPro
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="pr-10 transition-all duration-300 focus:ring-2 focus:ring-blue-500"
+                            className="pr-10"
                         />
                         <Button
                             type="button"
@@ -164,7 +149,7 @@ export default function CreateContainerForm({ versions }: CreateContainerFormPro
                     </Button>
                 </div>
             </div>
-            <Button type="submit" disabled={isLoading} className="w-full transition-all duration-300 hover:bg-blue-600">
+            <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading ? (
                     <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
